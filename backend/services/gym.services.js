@@ -1,14 +1,14 @@
-const userModel = require('../models/user.model');
+const gymModel = require('../models/gym.model');
 
-module.exports.createrUser = async ({
+module.exports.createrGym = async ({
     gymName,email,password,subscriptionPlan,
 }) => {
     if(!gymName || !email || !password){
         throw new Error('All fields are required');
     }
 
-    const user = userModel.create({
+    const gym = gymModel.create({
         gymName,email,password,subscriptionPlan
     })
-    return user;
+    return gym;
 }
