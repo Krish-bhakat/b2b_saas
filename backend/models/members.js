@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const memberSchema = new mongoose.Schema({
-    gymid: {type: mongoose.Schema.Types.ObjectId, ref:'User', required:true},
+    gymid: {type: mongoose.Schema.Types.ObjectId, ref:'Gym', required:true},
     name: {type:String, required:true},
     email: {type:String, required:true, unique:true},
     role:{type:String, enum:['Owner','Trainer','Member']},

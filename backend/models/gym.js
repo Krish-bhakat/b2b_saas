@@ -8,7 +8,7 @@ const gymSchema = new mongoose.Schema({
     password: {type:String, required:true, select:false},
     logo: {type:String},
     subscription:{
-        subscriptionPlan: {type:String, required:true},
+      planType: {type:String, required:true},
         status: {type:String, enum:['active','pending','cancelled']}
     }
 });
