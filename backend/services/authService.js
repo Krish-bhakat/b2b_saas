@@ -5,7 +5,7 @@ const members = require('../models/members');
 
 class authService {
     async registerGym(ownerData){
-        const {gymName,ownerName, email,password,planType} = ownerData;
+        const {gymName,ownerName, email,password,planType,phoneNumber} = ownerData;
 
         const existingGym = await gym.findOne({email});
         if(existingGym){
@@ -15,7 +15,7 @@ class authService {
         if (planType === 'basic') memberLimit = 200;
         if (planType === 'premium') memberLimit = 1000;
 
-        const newgym = await Gym.create({
+        const newgym = await gym.create({
             name: gymName,
             email:email,
             subscription:{
@@ -28,11 +28,11 @@ class authService {
         const hashedPassword = await bcrypt.hash(password, salt);
         
 
-        const newUser = await member.create({
+        const newUser = await members.create({
             gymid: newgym._id,
             email: email,
             name:ownerName,
-            paswword: hashedPassword,
+            password: hashedPassword,
             role:'Owner',
             phone:'0000000000',
             membershipStartDate: new Date(),
@@ -61,19 +61,23 @@ class authService {
         }
 
         const gymDetails = await gym.findById(existingGym.gymid);
-        if(!gymDetails) throw new Error('Gym not found');
-
-        if(gymDetails.subscription.status !== 'active'){
-            throw new Error('Your SaaS subscription is not active. Please contact support.');
+        if(!gymDetails){
+            throw new Error('Associated gym not found');
         }
 
-        const token = jwt.sign({ gymId: existingGym._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        if(gymDetails.subscription.status !== 'active'){
+            throw new Error('Gym subscription is not active');
+        }
+
+
+        const token = jwt.sign({ gymId: existingGym._id, userId: existingGym._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
         return {token, user:{
             id: existingGym._id,
-            gymName: existingGym.name,
+            gymName: gymDetails.name,
+            userName: existingGym.name,
             email: existingGym.email,
             role: existingGym.role,
-            plan: existingGym.subscription.planType,
+            plan: gymDetails.subscription.planType
         }};
     }
 }

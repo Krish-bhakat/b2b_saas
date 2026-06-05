@@ -1,24 +1,37 @@
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config(); // Loaded first!
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 8080;
+const MONGO_URI = process.env.MONGODB_URI;
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+// 1. Core Global Middleware
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const authRoutes = require('./routes/authRoutes');
-
-
-app.get('/', (req,res) => {
-    res.send("hello world");
+// 2. Traffic Tracker Middleware (MUST be placed BEFORE your routes!)
+app.use((req, res, next) => {
+    console.log(`📡 Incoming Request: ${req.method} to ${req.url}`);
+    next(); 
 });
 
-app.use('/register', authRoutes);
-app.use('/login',authRoutes);
+// 3. Mount Your Routes
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
 
-
-module.exports = app;
+// 4. Connect to Database & Start Listening
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log('🚀 Connected seamlessly to MongoDB');
+    // This establishes the physical network port connection and keeps it alive!
+    app.listen(PORT, () => {
+        console.log(`🏋️  Gym SaaS Engine actively listening on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Database connection error:', err);
+  });

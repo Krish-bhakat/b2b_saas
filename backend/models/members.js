@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 const memberSchema = new mongoose.Schema({
     gymid: {type: mongoose.Schema.Types.ObjectId, ref:'Gym', required:true},
     name: {type:String, required:true},
-    email: {type:String, required:true, unique:true},
+    email: {type:String, required:true},
+    password: {type:String, required:true},
     role:{type:String, enum:['Owner','Trainer','Member']},
     profilePicture:{type: String},
     phone: {type:String, required:true},
@@ -15,5 +16,6 @@ const memberSchema = new mongoose.Schema({
 }, 
     {timestamps:true}
 );
+memberSchema.index({email:1,gymid:1} , {unique:true});
 
 module.exports = mongoose.model('Member', memberSchema);
