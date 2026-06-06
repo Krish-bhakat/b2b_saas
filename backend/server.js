@@ -2,25 +2,25 @@ require('dotenv').config(); // Loaded first!
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-
+const memberRoutes = require('./routes/memberRoutes');
 const app = express();
 const PORT = 8080;
 const MONGO_URI = process.env.MONGODB_URI;
+const authRoutes = require('./routes/authRoutes');
+const subscriptionRoutes = require('./routes/subscriptionRoute');
 
-// 1. Core Global Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// 2. Traffic Tracker Middleware (MUST be placed BEFORE your routes!)
 app.use((req, res, next) => {
     console.log(`📡 Incoming Request: ${req.method} to ${req.url}`);
     next(); 
 });
 
-// 3. Mount Your Routes
-const authRoutes = require('./routes/authRoutes');
+
 app.use('/api/auth', authRoutes);
+app.use('/api',memberRoutes); 
+app.use('/api/plans',subscriptionRoutes);
 
 // 4. Connect to Database & Start Listening
 mongoose

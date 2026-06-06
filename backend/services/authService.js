@@ -59,20 +59,16 @@ class authService {
         if(!isMatch){
             throw new Error('Invalid email or password');
         }
-
         const gymDetails = await gym.findById(existingGym.gymid);
         if(!gymDetails){
             throw new Error('Associated gym not found');
         }
-
         if(gymDetails.subscription.status !== 'active'){
             throw new Error('Gym subscription is not active');
         }
-
-
-        const token = jwt.sign({ gymId: existingGym._id, userId: existingGym._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ gymId: existingGym._id, userId: existingGym._id, role:existingGym.role  }, process.env.JWT_SECRET, { expiresIn: '1d' });
         return {token, user:{
-            id: existingGym._id,
+            id: existingGym.gymId,
             gymName: gymDetails.name,
             userName: existingGym.name,
             email: existingGym.email,
