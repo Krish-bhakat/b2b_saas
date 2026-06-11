@@ -23,7 +23,7 @@ exports.createMembership = async(req,res) => {
         await newPlan.save();
 
         return res.status(200).json({message: "Plan created successfully", plan: newPlan});
-       
+       //
     }
     catch(err){
         return res.status(500).json({
