@@ -8,6 +8,7 @@ const PORT = 8080;
 const MONGO_URI = process.env.MONGODB_URI;
 const authRoutes = require('./routes/authRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoute');
+const bookingRoutes = require('./routes/bookingClassRoute');
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +22,8 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api',memberRoutes); 
 app.use('/api/plans',subscriptionRoutes);
+app.use('/api/schedule',bookingRoutes);
+
 
 // 4. Connect to Database & Start Listening
 mongoose

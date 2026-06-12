@@ -5,6 +5,7 @@ const classSchema = new mongoose.Schema({
     className: {type:String, required:true},
     trainerid: {type:mongoose.Schema.Types.ObjectId, ref:'Member', required:true},
     capacity: {type:Number, required:true},
+    bookedCount: {type:Number, default:0},
     schedule: {
         day: {type:String, required:true},
         startTime: {type:String, required:true},
